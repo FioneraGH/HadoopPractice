@@ -1,4 +1,4 @@
-package com.fionera.hadoop;
+package com.fionera.hadoop.mapred.reducer;
 
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;

@@ -1,4 +1,4 @@
-package com.fionera.hadoop;
+package com.fionera.hadoop.mapred.mapper;
 
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
