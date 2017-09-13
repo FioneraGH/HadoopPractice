@@ -9,6 +9,7 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.util.GenericOptionsParser;
+import org.apache.hadoop.util.StringUtils;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
@@ -20,16 +21,28 @@ public class RelaxDriver
     public int run(String[] strings) throws Exception {
         Configuration configuration = getConf();
         String[] otherArgs = new GenericOptionsParser(configuration, strings).getRemainingArgs();
-
-        if (otherArgs == null || otherArgs.length < 2) {
+        if (otherArgs == null || otherArgs.length != 3) {
+            System.out.println("There must be three params. <env> <in> <out>");
             return 2;
+        }
+
+        switch (otherArgs[0]){
+            case "local":
+                configuration.addResource("hadoop-local.xml");
+                break;
+            case "single":
+                configuration.addResource("hadoop-single.xml");
+                break;
+            default:
+                System.out.println("<env> must be \"local\" or \"single\".");
+                return 3;
         }
 
         Job job = Job.getInstance(configuration, "Relax");
         job.setJarByClass(RelaxDriver.class);
 
-        FileInputFormat.addInputPath(job, new Path(otherArgs[0]));
-        FileOutputFormat.setOutputPath(job, new Path(otherArgs[1]));
+        FileInputFormat.addInputPath(job, new Path(otherArgs[1]));
+        FileOutputFormat.setOutputPath(job, new Path(otherArgs[2]));
 
         job.setMapperClass(RelaxMapper.class);
         job.setReducerClass(RelaxReducer.class);
